@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/codewitch24/BookstoreOAuthAPI/src/clients/cassandra"
 	"github.com/codewitch24/BookstoreOAuthAPI/src/domain/access_token"
 	"github.com/codewitch24/BookstoreOAuthAPI/src/http"
 	"github.com/codewitch24/BookstoreOAuthAPI/src/repository/db"
@@ -12,6 +13,11 @@ var (
 )
 
 func StartApplication() {
+	session, err := cassandra.GetSession()
+	if err != nil {
+		panic(err)
+	}
+	session.Close()
 	repository := db.NewRepository()
 	service := access_token.NewService(repository)
 	handler := http.NewHandler(service)
