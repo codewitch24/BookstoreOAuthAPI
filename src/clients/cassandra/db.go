@@ -6,18 +6,23 @@ import (
 
 const (
 	Keyspace = "oauth"
+	Host     = "127.0.0.1"
 )
 
 var (
-	cluster *gocql.ClusterConfig
+	session *gocql.Session
 )
 
 func init() {
-	cluster = gocql.NewCluster("127.0.0.1")
+	cluster := gocql.NewCluster(Host)
 	cluster.Keyspace = Keyspace
 	cluster.Consistency = gocql.Quorum
+	var err error
+	if session, err = cluster.CreateSession(); err != nil {
+		panic(err)
+	}
 }
 
-func GetSession() (*gocql.Session, error) {
-	return cluster.CreateSession()
+func GetSession() *gocql.Session {
+	return session
 }
